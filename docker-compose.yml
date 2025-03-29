@@ -1,0 +1,14 @@
+services:
+  app:
+    build:
+      context: .  
+      dockerfile: Dockerfile  
+    container_name: sv-artifacts
+    ports:
+      - "${PORT}:${PORT}"  
+    environment:
+      SPRING_PROFILES_ACTIVE: ${ENV}  
+      SERVER_PORT: ${PORT} 
+    env_file:  
+      - .env  
+    restart: always
