@@ -1,12 +1,15 @@
 package com.zephiro.artifacts.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zephiro.artifacts.DTO.Quest;
+import com.zephiro.artifacts.DTO.Search;
 import com.zephiro.artifacts.entity.Questionnaire;
-import com.zephiro.artifacts.entity.Search;
 import com.zephiro.artifacts.repository.QuestionnaireRepository;
 
 @Service
@@ -27,6 +30,23 @@ public class QuestionnaireService {
         }
 
         questionnaireRepository.save(questionnaire);
+    }
+
+    public List<Quest> getQuestionnairesOnDate(String userId, String date) {
+        LocalDate localDate = LocalDate.parse(date);
+        List<Questionnaire> list = questionnaireRepository.findByUserIdAndCompletionDate(userId, localDate);
+        List<Quest> questList = new ArrayList<>();
+
+        if(list.isEmpty()) {
+            throw new RuntimeException("No questionnaires found for the given date or user ID");
+        }
+        else {
+            for (int i=0; i<list.size(); i++) {
+                Quest quest = new Quest(list.get(i).getSurveyId(), list.get(i).getSurveyName());
+                questList.add(quest);
+            }
+            return questList;
+        }
     }
 
     public Questionnaire getQuestionnaireByDate(Search search) {
