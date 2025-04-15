@@ -6,8 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.zephiro.artifacts.DTO.Search;
 import com.zephiro.artifacts.entity.Questionnaire;
+import com.zephiro.artifacts.entity.Search;
 import com.zephiro.artifacts.service.QuestionnaireService;
 
 import org.springframework.web.bind.annotation.GetMapping;

@@ -5,8 +5,8 @@ import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.zephiro.artifacts.DTO.Search;
 import com.zephiro.artifacts.entity.Questionnaire;
+import com.zephiro.artifacts.entity.Search;
 import com.zephiro.artifacts.repository.QuestionnaireRepository;
 
 @Service

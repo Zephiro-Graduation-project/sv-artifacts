@@ -1,4 +1,4 @@
-package com.zephiro.artifacts.DTO;
+package com.zephiro.artifacts.entity;
 
 import java.time.LocalDate;
 
