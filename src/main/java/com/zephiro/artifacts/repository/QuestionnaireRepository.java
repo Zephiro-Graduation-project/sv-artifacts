@@ -13,5 +13,5 @@ import com.zephiro.artifacts.entity.Questionnaire;
 public interface QuestionnaireRepository extends MongoRepository<Questionnaire, String> {
 
     List<Questionnaire> findByUserIdAndCompletionDate(String userId, LocalDate completionDate);
-    Optional<Questionnaire> findByUserIdAndSurveyIdAndCompletionDate(String userId, String surveyId, LocalDate completionDate);
+    Optional<Questionnaire> findByUserIdAndSurveyId(String userId, String surveyId);
 }

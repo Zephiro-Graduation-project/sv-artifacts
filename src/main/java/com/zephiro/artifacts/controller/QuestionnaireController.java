@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.zephiro.artifacts.entity.Questionnaire;
 import com.zephiro.artifacts.DTO.Quest;
-import com.zephiro.artifacts.DTO.Search;
 import com.zephiro.artifacts.service.QuestionnaireService;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +27,7 @@ public class QuestionnaireController {
     @PostMapping("/add")
     public ResponseEntity<?> saveQuestionnaire(@RequestBody Questionnaire questionnaire) {
         try {
+            // ToDo: Add rewards for the gamification system
             questionnaireService.saveQuestionnaire(questionnaire);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body("{\"message\": \"Answer saved successfully\"}");
@@ -40,10 +40,10 @@ public class QuestionnaireController {
         }
     }
 
-    @GetMapping("/ondate/{id}/{date}")
-    public ResponseEntity<?> getQuestionnairesOnDate(@PathVariable String id, @PathVariable String date) {
+    @GetMapping("/ondate/{userId}/{date}")
+    public ResponseEntity<?> getQuestionnairesOnDate(@PathVariable String userId, @PathVariable String date) {
         try {
-            List<Quest> questionnaires = questionnaireService.getQuestionnairesOnDate(id, date);
+            List<Quest> questionnaires = questionnaireService.getQuestionnairesOnDate(userId, date);
             return ResponseEntity.ok(questionnaires);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -54,10 +54,10 @@ public class QuestionnaireController {
         }
     }
 
-    @GetMapping("/specific")
-    public ResponseEntity<?> getQuestionnaireByDate(@RequestBody Search search) {
+    @GetMapping("/specific/{userId}/{surveyId}")
+    public ResponseEntity<?> getSpecificQuestionnaire(@PathVariable String userId, @PathVariable String surveyId) {
         try {
-            Questionnaire quest = questionnaireService.getQuestionnaireByDate(search);
+            Questionnaire quest = questionnaireService.getSpecificQuestionnaire(userId, surveyId);
             return ResponseEntity.ok(quest);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

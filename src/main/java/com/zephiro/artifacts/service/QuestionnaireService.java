@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.zephiro.artifacts.DTO.Quest;
-import com.zephiro.artifacts.DTO.Search;
 import com.zephiro.artifacts.entity.Questionnaire;
 import com.zephiro.artifacts.repository.QuestionnaireRepository;
 
@@ -38,7 +37,7 @@ public class QuestionnaireService {
         List<Quest> questList = new ArrayList<>();
 
         if(list.isEmpty()) {
-            throw new RuntimeException("No questionnaires found for the given date or user ID");
+            throw new RuntimeException("No questionnaires found for the given ID and user");
         }
         else {
             for (int i=0; i<list.size(); i++) {
@@ -49,11 +48,8 @@ public class QuestionnaireService {
         }
     }
 
-    public Questionnaire getQuestionnaireByDate(Search search) {
-        String userId = search.getUserId();
-        String surveyId = search.getSurveyId();
-        LocalDate date = search.getCompletionDate();
-        return questionnaireRepository.findByUserIdAndSurveyIdAndCompletionDate(userId, surveyId, date)
+    public Questionnaire getSpecificQuestionnaire(String userId, String surveyId) {
+        return questionnaireRepository.findByUserIdAndSurveyId(userId, surveyId)
                 .orElseThrow(() -> new RuntimeException("Questionnaire not found for the given date or user ID"));
     }
 }
