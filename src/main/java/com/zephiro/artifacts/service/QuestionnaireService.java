@@ -2,6 +2,8 @@ package com.zephiro.artifacts.service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -22,6 +24,7 @@ public class QuestionnaireService {
     private QuestionnaireRepository questionnaireRepository;
 
     public void saveQuestionnaire(Questionnaire questionnaire) {
+        // ToDo: Add rewards for the gamification system
         // Calculate the score based on the answers
         // The sociodemographic questionnaire does not have a score
         if(questionnaire.getType() != "Sociodemographic") {
@@ -40,6 +43,7 @@ public class QuestionnaireService {
         List<Questionnaire> list = questionnaireRepository.findByUserIdAndCompletionDate(userId, localDate);
         List<Quest> questList = new ArrayList<>();
 
+        // Create a list with the ID and name of the survey answered on that date
         if(list.isEmpty()) {
             throw new RuntimeException("No questionnaires found for the given ID and user");
         }
@@ -53,22 +57,31 @@ public class QuestionnaireService {
     }
 
     public Questionnaire getSpecificQuestionnaire(String responseId) {
+        // Get the questionnaire by ID
         return questionnaireRepository.findById(responseId)
                 .orElseThrow(() -> new RuntimeException("Questionnaire " + responseId + " not found"));
     }
 
     public List<Graphic> getGraphicData(String userId) {
         List<Questionnaire> questionnaires = questionnaireRepository.findByUserIdAndType(userId, "Microsurvey");
-        List<Graphic> graphicData = new ArrayList<>();
+        Map<LocalDate, Graphic> graphicsMap = new HashMap<>();
 
+        // Create a map with the last 7 days
         LocalDate today = LocalDate.now();
-        LocalDate fifteenDaysAgo = today.minusDays(6);
+        LocalDate startDate = today.minusDays(6);
+
+        // Fill the map with the last 7 days and initialize the graphics
+        for (int i = 0; i < 7; i++) {
+            LocalDate date = startDate.plusDays(i);
+            graphicsMap.put(date, new Graphic(date, 0, 0));
+        }
     
+        // Join the questionnaires by date and calculate the daily stress and anxiety
         Map<LocalDate, List<Questionnaire>> groupedByDate = questionnaires.stream()
             .filter(q -> (q.getSurveyName().equals("Night microsurvey") || q.getSurveyName().equals("Noon microsurvey")))
             .filter(q -> {
                 LocalDate date = q.getCompletionDate();
-                return (date != null && !date.isBefore(fifteenDaysAgo) && !date.isAfter(today));
+                return (date != null && !date.isBefore(startDate) && !date.isAfter(today));
             })
             .collect(Collectors.groupingBy(Questionnaire::getCompletionDate));
 
@@ -87,10 +100,14 @@ public class QuestionnaireService {
                     dailyAnxiety += r.get(1).getNumericalValue() + r.get(2).getNumericalValue() + r.get(4).getNumericalValue();
                 }
             }
-            Graphic g = new Graphic(entry.getKey(), dailyAnxiety, dailyStress);
-            graphicData.add(g);
+            graphicsMap.put(entry.getKey(), new Graphic(entry.getKey(), dailyAnxiety, dailyStress));
         }
-        graphicData.sort((g1, g2) -> g1.getDate().compareTo(g2.getDate()));
+
+        // Fill the graphics with the information in the map
+        List<Graphic> graphicData = graphicsMap.values().stream()
+            .sorted(Comparator.comparing(Graphic::getDate))
+            .collect(Collectors.toList());
+
         return graphicData;
     }
 }

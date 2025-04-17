@@ -28,7 +28,6 @@ public class QuestionnaireController {
     @PostMapping("/add")
     public ResponseEntity<?> saveQuestionnaire(@RequestBody Questionnaire questionnaire) {
         try {
-            // ToDo: Add rewards for the gamification system
             questionnaireService.saveQuestionnaire(questionnaire);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body("{\"message\": \"Answer saved successfully\"}");
