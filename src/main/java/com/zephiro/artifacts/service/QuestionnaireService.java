@@ -78,7 +78,7 @@ public class QuestionnaireService {
     
         // Join the questionnaires by date and calculate the daily stress and anxiety
         Map<LocalDate, List<Questionnaire>> groupedByDate = questionnaires.stream()
-            .filter(q -> (q.getSurveyName().equals("Night microsurvey") || q.getSurveyName().equals("Noon microsurvey")))
+            .filter(q -> (q.getSurveyName().equals("Microsurvey Diurno") || q.getSurveyName().equals("Microsurvey Nocturno")))
             .filter(q -> {
                 LocalDate date = q.getCompletionDate();
                 return (date != null && !date.isBefore(startDate) && !date.isAfter(today));
@@ -91,11 +91,11 @@ public class QuestionnaireService {
     
             for (Questionnaire q : entry.getValue()) {
                 List<Response> r = q.getResponses();
-                if(q.getSurveyName().equals("Night microsurvey")){
+                if(q.getSurveyName().equals("Microsurvey Nocturno")){
                     dailyStress += r.get(0).getNumericalValue() + r.get(2).getNumericalValue() + r.get(5).getNumericalValue();
                     dailyAnxiety += r.get(1).getNumericalValue() + r.get(3).getNumericalValue() + r.get(4).getNumericalValue();
                 }
-                else if(q.getSurveyName().equals("Noon microsurvey")){
+                else if(q.getSurveyName().equals("Microsurvey Diurno")){
                     dailyStress += r.get(0).getNumericalValue() + r.get(2).getNumericalValue() + r.get(3).getNumericalValue() + r.get(5).getNumericalValue();
                     dailyAnxiety += r.get(1).getNumericalValue() + r.get(2).getNumericalValue() + r.get(4).getNumericalValue();
                 }
