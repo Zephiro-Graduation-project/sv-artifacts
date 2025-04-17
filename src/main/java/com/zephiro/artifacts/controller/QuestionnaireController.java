@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zephiro.artifacts.entity.Questionnaire;
+import com.zephiro.artifacts.DTO.Graphic;
 import com.zephiro.artifacts.DTO.Quest;
 import com.zephiro.artifacts.service.QuestionnaireService;
 
@@ -54,10 +55,10 @@ public class QuestionnaireController {
         }
     }
 
-    @GetMapping("/specific/{userId}/{surveyId}")
-    public ResponseEntity<?> getSpecificQuestionnaire(@PathVariable String userId, @PathVariable String surveyId) {
+    @GetMapping("/specific/{responseId}")
+    public ResponseEntity<?> getSpecificQuestionnaire(@PathVariable String responseId) {
         try {
-            Questionnaire quest = questionnaireService.getSpecificQuestionnaire(userId, surveyId);
+            Questionnaire quest = questionnaireService.getSpecificQuestionnaire(responseId);
             return ResponseEntity.ok(quest);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -67,5 +68,18 @@ public class QuestionnaireController {
                     .body("{\"error\": \"Error occurred while fetching content\"}");
         }
     }
-    
+
+    @GetMapping("/graphic/{userId}")
+    public ResponseEntity<?> getGraphicData(@PathVariable String userId) {
+        try {
+            List<Graphic> graphicData = questionnaireService.getGraphicData(userId);
+            return ResponseEntity.ok(graphicData);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("{\"error\": \"" + e.getMessage() + "\"}");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"error\": \"Error occurred while fetching content\"}");
+        }
+    }
 }
