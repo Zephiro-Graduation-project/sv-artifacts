@@ -2,6 +2,7 @@ package com.zephiro.artifacts.service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -127,5 +128,18 @@ public class QuestionnaireService {
         }
 
         return streak;
+    }
+
+    public List<LocalDate> getAllDates(String userId) {
+        List<Questionnaire> questionnaires = questionnaireRepository.findByUserId(userId);
+
+        Map<LocalDate, List<Questionnaire>> groupedByDate = questionnaires.stream()
+            .filter(q -> q.getCompletionDate() != null)
+            .collect(Collectors.groupingBy(Questionnaire::getCompletionDate));
+
+        List<LocalDate> dates = new ArrayList<>(groupedByDate.keySet());
+
+        Collections.sort(dates, Comparator.reverseOrder());
+        return dates;
     }
 }

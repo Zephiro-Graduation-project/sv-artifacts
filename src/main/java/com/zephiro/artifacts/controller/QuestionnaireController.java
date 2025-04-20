@@ -1,5 +1,6 @@
 package com.zephiro.artifacts.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +88,17 @@ public class QuestionnaireController {
         try {
             int streak = questionnaireService.getStreak(userId);
             return ResponseEntity.ok(streak);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"error\": \"Error occurred while fetching content\"}");
+        }
+    }
+
+    @GetMapping("/dates/{userId}")
+    public ResponseEntity<?> getDates(@PathVariable String userId) {
+        try {
+            List<LocalDate> dates = questionnaireService.getAllDates(userId);
+            return ResponseEntity.ok(dates);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("{\"error\": \"Error occurred while fetching content\"}");
