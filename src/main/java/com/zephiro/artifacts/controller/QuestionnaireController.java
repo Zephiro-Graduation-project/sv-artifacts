@@ -81,4 +81,15 @@ public class QuestionnaireController {
                     .body("{\"error\": \"Error occurred while fetching content\"}");
         }
     }
+
+    @GetMapping("/streak/{userId}")
+    public ResponseEntity<?> getStreak(@PathVariable String userId) {
+        try {
+            int streak = questionnaireService.getStreak(userId);
+            return ResponseEntity.ok(streak);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"error\": \"Error occurred while fetching content\"}");
+        }
+    }
 }

@@ -13,4 +13,5 @@ public interface QuestionnaireRepository extends MongoRepository<Questionnaire, 
 
     List<Questionnaire> findByUserIdAndCompletionDate(String userId, LocalDate completionDate);
     List<Questionnaire> findByUserIdAndType(String userId, String type);
+    List<Questionnaire> findByUserId(String userId);
 }

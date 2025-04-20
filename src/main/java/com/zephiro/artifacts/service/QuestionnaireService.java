@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,6 @@ public class QuestionnaireService {
     private QuestionnaireRepository questionnaireRepository;
 
     public void saveQuestionnaire(Questionnaire questionnaire) {
-        // ToDo: Add rewards for the gamification system
         // Calculate the score based on the answers
         // The sociodemographic questionnaire does not have a score
         if(questionnaire.getType() != "Sociodemographic") {
@@ -109,5 +109,23 @@ public class QuestionnaireService {
             .collect(Collectors.toList());
 
         return graphicData;
+    }
+
+    public int getStreak(String userId) {
+        int streak = 0;
+        LocalDate today = LocalDate.now();
+
+        List<Questionnaire> questionnaires = questionnaireRepository.findByUserId(userId);
+
+        // Filtrar nulos y duplicados por fecha
+        Set<LocalDate> completedDates = questionnaires.stream()
+                .map(Questionnaire::getCompletionDate)
+                .collect(Collectors.toSet());
+
+        while (completedDates.contains(today.minusDays(streak))) {
+            streak++;
+        }
+
+        return streak;
     }
 }

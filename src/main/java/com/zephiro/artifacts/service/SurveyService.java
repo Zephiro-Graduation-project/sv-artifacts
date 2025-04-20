@@ -12,6 +12,7 @@ public class SurveyService {
     @Autowired
     private SurveyRepository surveyRepository;
 
+    // For the develpment team only
     public void createArtifact(Survey survey) {
         surveyRepository.save(survey);
     }
